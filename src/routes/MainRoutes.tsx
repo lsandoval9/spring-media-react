@@ -1,15 +1,17 @@
-import React, { FC, useState } from 'react'
+import { useDisclosure } from '@chakra-ui/hooks';
+import React, { FC, useEffect, useState } from 'react'
 import {
     BrowserRouter as Router,
     Switch,
     Route,
-    Link
+    Link,
+    useLocation
   } from "react-router-dom";
 import Drawer from '../components/layout/Drawer';
+import FilterView from '../views/FilterView';
 import HomeView from '../views/HomeView';
   
 export interface IMainRoutes {
-    children?: any,
     Header: FC<any>,
     Footer: FC<any>
 }
@@ -20,14 +22,20 @@ const MainRoutes: FC<IMainRoutes> = (props: IMainRoutes): JSX.Element => {
 
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
+    const {isOpen, onClose, onOpen} = useDisclosure()
+
+    
+
     return (
         <Router>
-            <Header isDrawerOpen={isDrawerOpen} setIsDrawerOpen={setIsDrawerOpen} />
-            <Drawer isDrawerOpen={isDrawerOpen} setIsDrawerOpen={setIsDrawerOpen}/>
-
-            <Route path="/" component={HomeView}/>
-
-            <Footer />
+            <Header  onOpen={onOpen}/>
+            <Drawer onClose={onClose} isOpen={isOpen}/>
+            <Switch>
+                <Route path="/" component={HomeView} exact />
+                <Route path="/filter" component={FilterView} />
+            </Switch>
+            
+            <Footer />  
         </Router>
     )
 }
